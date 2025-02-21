@@ -1,0 +1,26 @@
+# Bytecode / intermediary files
+**/__pycache__/*
+*.py[cod]
+*$py.class
+
+# Environments
+.env
+.venv
+env/
+
+**/venv/*
+ENV/
+
+
+# OS generated files
+.DS_Store
+
+# VS Code files
+.vscode/
+
+# Packages
+*.swp
+*~
+tmp/
+temp/
+.tmp/

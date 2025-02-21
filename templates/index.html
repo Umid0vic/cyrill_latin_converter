@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Conversion Tool</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="header">
+        <div class="header-title" data-lang-key="headerTitle">File Conversion Tool</div>
+        <div class="language-selector">
+            <select onchange="setLanguage(this.value)">
+                <option value="en">English</option>
+                <option value="uz">Uzbek</option>
+                <option value="ru">Russian</option>
+            </select>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h1 class="header-title" data-lang-key="title">File Conversion Tool</h1>
+        <p data-lang-key="instructions">Use this tool to convert files and text from Cyrillic to Latin script. Upload a file or enter text below to get started.</p>
+
+        <div class="file-upload">
+            <label for="file-upload" class="custom-file-upload" data-lang-key="fileUploadButton">Choose File</label>
+            <input type="file" id="file-upload" name="file" accept=".pdf, .doc, .docx">
+            <button id="uploadButton" onclick="uploadFile()" data-lang-key="uploadButton">Upload and Convert</button>
+        </div>
+        
+        <div class="loading-spinner" id="loading-spinner"></div>
+
+        <h2 class="header-title" data-lang-key="textToolHeader">Text Conversion Tool</h2>
+        
+        <div class="conversion-options">
+            <label for="conversion-type" data-lang-key="conversionTypeLabel">Select Conversion Type:</label>
+            <div class="conversion-selector">
+                <select id="conversion-type">
+                    <option value="cyrillic-to-latin" data-lang-key="conversionTypeCyrillicToLatin">Cyrillic to Latin</option>
+                    <option value="latin-to-cyrillic" data-lang-key="conversionTypeLatinToCyrillic">Latin to Cyrillic</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="text-area-container">
+            <textarea id="inputText" placeholder="Enter text to convert..." data-lang-key="textAreaPlaceholder"></textarea>
+            <div id="convertedText" data-lang-key="convertedText">Converted text will appear here...</div>
+        </div>
+        <button id="convertButton" onclick="convertText()" data-lang-key="convertButton">Convert Text</button>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
