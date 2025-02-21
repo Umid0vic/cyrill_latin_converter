@@ -2,9 +2,9 @@ const translations = {
     en: {
         headerTitle: "File Conversion Tool",
         title: "File Conversion Tool",
-        instructions: "Use this tool to convert files and text from Cyrillic to Latin script. Upload a file or enter text below to get started.",
+        instructions: "Use this tool to convert files and text. Note that file conversion is only available from Cyrillic to Latin.",
         fileUploadButton: "Choose File",
-        uploadButton: "Upload and Convert",
+        uploadButton: "Upload and Convert to Latin",
         conversionTypeLabel: "Select Conversion Type:",
         conversionTypeCyrillicToLatin: "Cyrillic to Latin",
         conversionTypeLatinToCyrillic: "Latin to Cyrillic",
@@ -13,14 +13,15 @@ const translations = {
         convertedText: "Converted text will appear here...",
         convertButton: "Convert Text",
         fileUploadMessage: "Please select a file before uploading.",
-        textInputMessage: "Please enter text before converting."
+        textInputMessage: "Please enter text before converting.",
+        fileToolHeader: "File Conversion (Cyrillic to Latin only)"
     },
     uz: {
         headerTitle: "Faylni Konvertatsiya Qilish",
         title: "Faylni Konvertatsiya Qilish",
-        instructions: "Ushbu vositadan fayllar va matnlarni kirilldan lotin yozuviga o‘tkazish uchun foydalaning. Faylni yuklang yoki quyida matn kiriting.",
+        instructions: "Ushbu vositadan fayllar va matnlarni o'zgartirish uchun foydalaning. E'tibor bering: fayl konvertatsiyasi faqat Kirilldan Lotinga mavjud.",
         fileUploadButton: "Faylni Tanlash",
-        uploadButton: "Yuklash va O'zgartirish",
+        uploadButton: "Yuklash va Lotinga O'zgartirish",
         conversionTypeLabel: "Konvertatsiya Turini Tanlang:",
         conversionTypeCyrillicToLatin: "Kirilldan Lotinga",
         conversionTypeLatinToCyrillic: "Lotindan Kirillga",
@@ -29,14 +30,15 @@ const translations = {
         convertedText: "O'zgartirilgan matn shu yerda paydo bo'ladi...",
         convertButton: "Matnni O'zgartirish",
         fileUploadMessage: "Iltimos, yuklashdan oldin faylni tanlang.",
-        textInputMessage: "Iltimos, o'zgartirishdan oldin matn kiriting."
+        textInputMessage: "Iltimos, o'zgartirishdan oldin matn kiriting.",
+        fileToolHeader: "Fayl Konvertatsiyasi (faqat Kirilldan Lotinga)"
     },
     ru: {
         headerTitle: "Инструмент Конвертации Файлов",
         title: "Инструмент Конвертации Файлов",
-        instructions: "Используйте этот инструмент для преобразования файлов и текста с кириллицы на латиницу. Загрузите файл или введите текст ниже, чтобы начать.",
+        instructions: "Используйте этот инструмент для преобразования файлов и текста. Обратите внимание: конвертация файлов доступна только из Кириллицы в Латиницу.",
         fileUploadButton: "Выберите Файл",
-        uploadButton: "Загрузить и Конвертировать",
+        uploadButton: "Загрузить и Преобразовать в Латиницу",
         conversionTypeLabel: "Выберите Тип Конвертации:",
         conversionTypeCyrillicToLatin: "Кириллица на Латиницу",
         conversionTypeLatinToCyrillic: "Латиница на Кириллицу",
@@ -45,16 +47,26 @@ const translations = {
         convertedText: "Преобразованный текст появится здесь...",
         convertButton: "Преобразовать текст",
         fileUploadMessage: "Пожалуйста, выберите файл перед загрузкой.",
-        textInputMessage: "Пожалуйста, введите текст перед преобразованием."
+        textInputMessage: "Пожалуйста, введите текст перед преобразованием.",
+        fileToolHeader: "Конвертация Файлов (только из Кириллицы в Латиницу)"
     }
 };
 
+let currentLanguage = 'en';
+
 function setLanguage(lang) {
+    currentLanguage = lang;
     document.querySelectorAll('[data-lang-key]').forEach(element => {
         const key = element.getAttribute('data-lang-key');
-        element.innerText = translations[lang][key];
-        if (element.tagName === "TEXTAREA" || element.tagName === "INPUT") {
+        if (element.tagName === "TEXTAREA") {
+            // Only update placeholder if textarea is empty
+            if (!element.value.trim()) {
+                element.placeholder = translations[lang][key];
+            }
+        } else if (element.tagName === "INPUT") {
             element.placeholder = translations[lang][key];
+        } else {
+            element.innerText = translations[lang][key];
         }
     });
 }
@@ -69,15 +81,20 @@ document.getElementById('file-upload').addEventListener('change', function() {
 });
 
 document.getElementById('inputText').addEventListener('focus', function() {
-    // Clear the placeholder text on focus
+    // Clear both the placeholder and the text content when focused
     this.placeholder = '';
+    if (this.value === translations[currentLanguage].textAreaPlaceholder) {
+        this.value = '';
+    }
     this.classList.add('user-input');
 });
 
 document.getElementById('inputText').addEventListener('blur', function() {
-    // Restore the placeholder text if the user leaves the textarea empty
-    if (this.value.trim() === '') {
-        this.placeholder = translations.en.textAreaPlaceholder;
+    // Only restore the placeholder if no text was entered
+    if (!this.value.trim()) {
+        const currentLanguage = document.querySelector('.language-selector select').value;
+        this.placeholder = translations[currentLanguage].textAreaPlaceholder;
+        this.value = '';
         this.classList.remove('user-input');
     }
 });

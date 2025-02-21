@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Conversion Tool</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="header">
@@ -19,34 +22,40 @@
     </div>
     
     <div class="container">
-        <h1 class="header-title" data-lang-key="title">File Conversion Tool</h1>
-        <p data-lang-key="instructions">Use this tool to convert files and text from Cyrillic to Latin script. Upload a file or enter text below to get started.</p>
+        <h1 class="section-title" data-lang-key="title">File Conversion Tool</h1>
+        <p class="instructions" data-lang-key="instructions">Use this tool to convert files and text. Note that file conversion is only available from Cyrillic to Latin.</p>
 
-        <div class="file-upload">
-            <label for="file-upload" class="custom-file-upload" data-lang-key="fileUploadButton">Choose File</label>
-            <input type="file" id="file-upload" name="file" accept=".pdf, .doc, .docx">
-            <button id="uploadButton" onclick="uploadFile()" data-lang-key="uploadButton">Upload and Convert</button>
-        </div>
-        
-        <div class="loading-spinner" id="loading-spinner"></div>
-
-        <h2 class="header-title" data-lang-key="textToolHeader">Text Conversion Tool</h2>
-        
-        <div class="conversion-options">
-            <label for="conversion-type" data-lang-key="conversionTypeLabel">Select Conversion Type:</label>
-            <div class="conversion-selector">
-                <select id="conversion-type">
-                    <option value="cyrillic-to-latin" data-lang-key="conversionTypeCyrillicToLatin">Cyrillic to Latin</option>
-                    <option value="latin-to-cyrillic" data-lang-key="conversionTypeLatinToCyrillic">Latin to Cyrillic</option>
-                </select>
+        <!-- File Conversion Section -->
+        <div class="file-section">
+            <h2 class="section-title" data-lang-key="fileToolHeader">File Conversion (Cyrillic to Latin only)</h2>
+            <div class="file-upload">
+                <label for="file-upload" class="custom-file-upload" data-lang-key="fileUploadButton">Choose File</label>
+                <input type="file" id="file-upload" name="file" accept=".pdf, .doc, .docx">
+                <button id="uploadButton" onclick="uploadFile()" data-lang-key="uploadButton" disabled>Upload and Convert to Latin</button>
+                <div class="loading-spinner" id="loading-spinner"></div>
             </div>
         </div>
-        
-        <div class="text-area-container">
-            <textarea id="inputText" placeholder="Enter text to convert..." data-lang-key="textAreaPlaceholder"></textarea>
-            <div id="convertedText" data-lang-key="convertedText">Converted text will appear here...</div>
+
+        <!-- Text Conversion Section -->
+        <div class="text-section">
+            <h2 class="section-title" data-lang-key="textToolHeader">Text Conversion Tool</h2>
+            <div class="conversion-options">
+                <label for="conversion-type" data-lang-key="conversionTypeLabel">Select Conversion Type:</label>
+                <div class="conversion-selector">
+                    <select id="conversion-type">
+                        <option value="cyrillic-to-latin" data-lang-key="conversionTypeCyrillicToLatin">Cyrillic to Latin</option>
+                        <option value="latin-to-cyrillic" data-lang-key="conversionTypeLatinToCyrillic">Latin to Cyrillic</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="text-area-container">
+                <textarea id="inputText" placeholder="Enter text to convert..." data-lang-key="textAreaPlaceholder"></textarea>
+                <div id="convertedText" data-lang-key="convertedText">Converted text will appear here...</div>
+            </div>
+            <button id="convertButton" onclick="convertText()" data-lang-key="convertButton" disabled>Convert Text</button>
+            <div class="loading-spinner" id="loading-spinner-text"></div>
         </div>
-        <button id="convertButton" onclick="convertText()" data-lang-key="convertButton">Convert Text</button>
     </div>
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
