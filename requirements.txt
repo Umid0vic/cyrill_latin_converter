@@ -1,4 +1,4 @@
 flask==2.0.1
 pdfplumber==0.7.4
 python-docx==0.8.11
-reportlab==3.6.8
+reportlab==4.3.1
