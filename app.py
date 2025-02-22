@@ -189,4 +189,4 @@ def convert_text():
     return jsonify({'converted': converted_text})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
