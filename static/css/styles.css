@@ -229,6 +229,21 @@ textarea:focus {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
+.file-limits {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background: #f8fafc;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+}
+
+.limit-info {
+    color: #64748b;
+    margin: 0;
+    font-size: 0.875rem;
+    text-align: center;
+}
+
 .file-section {
     border-left: 4px solid #3b82f6;
 }
@@ -239,6 +254,17 @@ textarea:focus {
 
 .file-section .section-title::after {
     background: linear-gradient(to right, #3b82f6, #60a5fa);
+}
+
+.custom-file-upload.disabled {
+    background-color: #e5e7eb;
+    border-color: #d1d5db;
+    color: #9ca3af;
+    pointer-events: none;
+}
+
+.limit-info small:last-child {
+    transition: color 0.3s ease;
 }
 
 .text-section .section-title::after {

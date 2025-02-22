@@ -31,8 +31,15 @@
             <div class="file-upload">
                 <label for="file-upload" class="custom-file-upload" data-lang-key="fileUploadButton">Choose File</label>
                 <input type="file" id="file-upload" name="file" accept=".pdf, .doc, .docx">
-                <button id="uploadButton" onclick="uploadFile()" data-lang-key="uploadButton" disabled>Upload and Convert to Latin</button>
+                <button id="uploadButton" onclick="uploadFile()" data-lang-key="uploadButton" disabled>Convert to Latin</button>
                 <div class="loading-spinner" id="loading-spinner"></div>
+            </div>
+            <div class="file-limits">
+                <p class="limit-info">
+                    <small>Maximum file size: 5MB</small>
+                    <br>
+                    <small>Daily conversion limit: 3 files per day</small>
+                </p>
             </div>
         </div>
 

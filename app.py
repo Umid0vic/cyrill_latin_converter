@@ -1,10 +1,11 @@
-from flask import Flask, request, send_file, render_template, jsonify
+from flask import Flask, request, send_file, render_template, jsonify, abort
 from io import BytesIO
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 import pdfplumber
 from docx import Document
 import logging
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
@@ -59,8 +60,13 @@ latin_to_cyrillic_map = {
     'Ya': 'Я', 'ya': 'я',
     "G'": 'Ғ', "g'": 'ғ',   # Mapping for special G
     'Ts': 'Ц', 'ts': 'ц',
-    'Yo': 'Ё', 'yo': 'ё'
+    'Yo': 'Ё', 'yo': 'ё',
+    'W': 'В', 'W': 'в',
 }
+
+MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB limit
+MAX_DAILY_CONVERSIONS = 3  # Number of conversions per day
+CONVERSION_COUNTER = {}  # Store IP addresses and their conversion counts
 
 def convert_cyrillic_to_latin(text):
     """Converts Cyrillic text to Latin using the defined mapping."""
@@ -140,18 +146,50 @@ def save_to_pdf(text, output):
     else:
         logging.info("No text to save.")
 
+def check_conversion_limits():
+    client_ip = request.remote_addr
+    current_date = datetime.now().date()
+    
+    # Clean up old entries
+    for ip in list(CONVERSION_COUNTER.keys()):
+        if CONVERSION_COUNTER[ip]['date'] != current_date:
+            del CONVERSION_COUNTER[ip]
+    
+    # Check if IP exists and initialize if not
+    if client_ip not in CONVERSION_COUNTER:
+        CONVERSION_COUNTER[client_ip] = {
+            'count': 0,
+            'date': current_date
+        }
+    
+    # Check if limit reached
+    if CONVERSION_COUNTER[client_ip]['count'] >= MAX_DAILY_CONVERSIONS:
+        return False
+    
+    CONVERSION_COUNTER[client_ip]['count'] += 1
+    return True
+
 @app.route('/')
 def index():
     return render_template('index.html')
 
 @app.route('/convert', methods=['POST'])
 def convert():
+    # Check conversion limits
+    if not check_conversion_limits():
+        return "Daily conversion limit reached", 429
+
     file = request.files['file']
     if not file:
         return "No file uploaded", 400
 
-    # Convert the uploaded file to BytesIO object
-    file_stream = BytesIO(file.read())
+    # Check file size
+    file_content = file.read()
+    if len(file_content) > MAX_FILE_SIZE:
+        return "File size exceeds limit (5MB)", 413
+
+    # Convert the file content to BytesIO
+    file_stream = BytesIO(file_content)
     file_extension = file.filename.split('.')[-1].lower()
 
     if file_extension == 'pdf':
@@ -187,6 +225,18 @@ def convert_text():
         converted_text = convert_cyrillic_to_latin(input_text)
 
     return jsonify({'converted': converted_text})
+
+# Add this new route
+@app.route('/remaining-conversions', methods=['GET'])
+def get_remaining_conversions():
+    client_ip = request.remote_addr
+    current_date = datetime.now().date()
+    
+    if client_ip not in CONVERSION_COUNTER or CONVERSION_COUNTER[client_ip]['date'] != current_date:
+        return jsonify({'remaining': MAX_DAILY_CONVERSIONS})
+    
+    remaining = MAX_DAILY_CONVERSIONS - CONVERSION_COUNTER[client_ip]['count']
+    return jsonify({'remaining': max(0, remaining)})
 
 if __name__ == '__main__':
     app.run()
